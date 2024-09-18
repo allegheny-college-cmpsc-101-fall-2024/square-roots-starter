@@ -1,0 +1,22 @@
+line-length = 88 # use the black default for line length
+
+lint.select = [
+    "E",    # pycodestyle errors
+    "D",    # pydocstyle errors
+    "I",    # isort
+    "F",    # Pyflakes
+    "PL",   # pylint
+    "Q",    # flake8-quotes
+    "RUF",  # ruff-specific
+    "W",    # pycodestyle warnings
+    "PLR1711", # Useless return statement at end of function
+    "PLR5501", # Use elif instead of else then if, to reduce indentation
+]
+
+lint.ignore = [
+    "E731", # do not assign a `lambda` expression, use a `def`
+    "E501", # do not check line length
+    "D203", # do not check blank line before class docstring
+    "D213", # do not check multi-line docstring summary on second line
+    "PLR", # do not check PLR
+]

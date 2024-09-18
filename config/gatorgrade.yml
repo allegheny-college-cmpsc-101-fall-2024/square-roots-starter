@@ -1,0 +1,125 @@
+setup: |
+  cd squareroot && poetry install
+  echo "Done installing project dependencies!"
+---
+
+# Reminder for ^^^:
+# All commands executed in the setup block are done in a
+# one-by-one fashion from the current working directory. This means
+# that there is no history associated with running the commands and
+# thus multiple commands must be run in a single chain.
+
+# perform checks on a file
+- squareroot/squareroot/main.py:
+    - description: Ensure that the main.py file exists in the squareroot/squareroot/ directory
+      check: ConfirmFileExists
+    - description: Complete all TODOs, remove the TODO markers, and rewrite comments for main.py
+      check: MatchFileFragment
+      options:
+        fragment: TODO
+        count: 0
+        exact: true
+    - description: Create a sufficient number of docstring (i.e., multiple-line) comments in main.py
+      check: CountMultipleLineComments
+      options:
+        language: "Python"
+        count: 6
+        exact: false
+    - description: Create a sufficient number of single-line comments in main.py
+      check: CountSingleLineComments
+      options:
+        language: "Python"
+        count: 25
+        exact: false
+
+# perform checks on a file
+- squareroot/tests/test_squareroot.py:
+    - description: Ensure that the test_squareroot.py file exists in the squareroot/tests/ directory
+      check: ConfirmFileExists
+    - description: Complete all TODOs, remove the TODO markers, and rewrite comments for test_squareroot.py
+      check: MatchFileFragment
+      options:
+        fragment: TODO
+        count: 0
+        exact: true
+    - description: Create a sufficient number of docstring (i.e., multiple-line) comments in test_squareroot.py
+      check: CountMultipleLineComments
+      options:
+        language: "Python"
+        count: 3
+        exact: false
+    - description: Ensure that there are at least three test cases inside the test suite
+      check: MatchFileFragment
+      options:
+        fragment: "test_"
+        count: 3
+        exact: false
+
+# run a command
+- description: Pass the linting checks run by mypy
+  command: cd squareroot && poetry run task mypy
+
+# run a command
+- description: Pass the linting checks run by pymarkdown
+  command: cd squareroot && poetry run task markdownlint
+
+# run a command
+- description: Pass all of the Pytest test cases
+  command: cd squareroot && poetry run task test
+
+# count number of commits in the GitHub repository
+- description: Have at least a specific minimum of commits in repository
+  check: CountCommits
+  options:
+    count: 7
+
+# perform checks on a file
+- writing/reflection.md:
+    - description: Ensure that the reflection.md file exists in the writing/ directory
+      check: ConfirmFileExists
+    - description: Complete all TODOs, remove the TODO markers, and rewrite comments for the reflection
+      check: MatchFileFragment
+      options:
+        fragment: TODO
+        count: 0
+        exact: true
+    - description: Delete the 'Add Your Name Here' prompt in the reflection file
+      check: MatchFileFragment
+      options:
+        fragment: "Add Your Name Here"
+        count: 0
+        exact: true
+    - description: Write a minimum number of meaningful words in the reflection
+      check: CountFileWords
+      options:
+        count: 200
+        exact: false
+    - description: Confirm that the markdown file has the correct number of headers
+      check: CountMarkdownTags
+      options:
+        tag: heading
+        count: 8
+        exact: false
+    - description: Confirm that the markdown file has the correct number of fenced code blocks
+      check: CountMarkdownTags
+      options:
+        tag: code_block
+        count: 4
+        exact: false
+
+# run the program and confirm correct number of lines in the output
+- description: Run the program and confirm the correct number of non-blank lines in the output
+  check: CountCommandOutput
+  options:
+    command: 'cd squareroot && poetry run squareroot --number 25000 --approach exhaustive'
+    count: 4
+    exact: true
+
+# run the program and confirm the existence of fragments in its output
+- description: 'Run the program and confirm the existence of content in its output: 25000'
+  check: MatchCommandFragment
+  options:
+    command: 'cd squareroot && poetry run squareroot --number 25000 --approach exhaustive'
+    fragment: 25000
+    count: 2
+    exact: true
